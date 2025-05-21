@@ -3,7 +3,7 @@
 % find_ripples [Carlos Carrasco] 
 % by Kamin Kim, 2020 Feb [Ranganath Lab @ UCD] 
 
-function [ripples,ripples_stat, exc] = detect_SWR_MGS(data, coi, cref)
+function [ripples,ripples_stat, exc] = detect_SWR(data, coi, cref)
 %         addpath(genpath('/Users/kaminkim/Documents/toolboxes/eeglab13_4_4b/'));
         % SWR detection algorithm.
         % Detecting ripples after exclusion of electrical/muscular artifacts and interictal epileptic discharges (IEDs).
@@ -111,7 +111,7 @@ function [ripples,ripples_stat, exc] = detect_SWR_MGS(data, coi, cref)
             IED_onsets(ets(:,2)) = 1;
             
             % Find ripples:
-            [ripples.(elecs{elec}), ripples_stat.(elecs{elec}), exc.(elecs{elec})] = ripples_detection_excluding_IED_MGS(squaredSignalNormA,signalA,time,th,minDistance,...
+            [ripples.(elecs{elec}), ripples_stat.(elecs{elec}), exc.(elecs{elec})] = ripples_detection_excluding_IED(squaredSignalNormA,signalA,time,th,minDistance,...
                 minRippleDuration,maxRippleDuration,squaredSignalNormB,squaredSignalNormC, IED_onsets, Fs);
             
             %                 figure('units','normalized','outerposition',[0 0 1 0.5],'Color','w');

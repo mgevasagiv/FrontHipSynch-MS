@@ -52,7 +52,7 @@ for ii_s = 1:length(subj_list)
     end
     
     % run ripple detection
-    [ripples,ripples_stat, exc] = detect_SWR_MGS(data, coi_cidx, cref_cidx); % this function preps data for SWR detection and calls the actual detection code (ripples_detection_excluding_IED_kk)
+    [ripples,ripples_stat, exc] = detect_SWR(data, coi_cidx, cref_cidx); % this function preps data for SWR detection and calls the actual detection code (ripples_detection_excluding_IED_kk)
     save(fullfile(subjdir_ripple, fname_ripple), 'ripples', 'ripples_stat', 'exc');
     
     clear ripples ripple_stat exc
