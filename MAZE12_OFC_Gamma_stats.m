@@ -1,16 +1,12 @@
 % MAZE12_OFC_Gamma_stats
 % Factorial stats analyzing TFR diagrams performed by MAZE10_calc_TFR_event
 
-% Separate TFR plots per OFC area
+
 clear all; close all
+addpath(genpath('E:\Dropbox\Code\Useful_code'))
+addpath(genpath('C:\Users\mgeva\Documents\GitHub\miscTools\distributionPlot'))
 
-%% Define lateral and medial contacts
-% manuscript - 19, 20, 23
-lOFC_contacts = [11  31  32  61];
-
-% manuscript - 21, 24, 25
-mOFC_contacts = [41  42  71  81];
-
+%% Color scheme
 cmap = brewermap(3,'PRGn');
 cmap(2,:) = 0.8*cmap(2,:);
 for ii = 1:3
@@ -18,7 +14,7 @@ for ii = 1:3
 end
 % 'X' , 'N', 'G'
 cmap_behav{4} = cmap_behav{3}*0.6; % 'preG'
-%%
+
 % Reorganize colors for the needed order - 'x' 'g' 'preg' 'n'
 cmap_behav_g{1} = cmap_behav{1};
 cmap_behav_g{2} = cmap_behav{3};
@@ -27,9 +23,6 @@ cmap_behav_g{4} = cmap_behav{2};
 
 
 %%
-% Collecting and Plotting the output of
-addpath(genpath('E:\Dropbox\Code\Useful_code'))
-addpath(genpath('C:\Users\mgeva\Documents\GitHub\miscTools\distributionPlot'))
 
 srate = 512;
 c_count = 1;

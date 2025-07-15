@@ -208,12 +208,32 @@ for iSub = 1: length(subjs)
                     sum(maze_nav_impv.nMoves_b1 < maze_nav_impv.nMoves_b2)/height(maze_nav_impv)] ;        
 end  
 
-figure
+newA4figure('maze_behav_ratios')
+cmap_b = brewermap(3,'Blues');
 for iSub = 1: length(subjs)
     subplot(2,5,iSub)
-    pp = pie(ratio(iSub, :),[0,0,1]); 
-    pp
+    h = pie(ratio(iSub, :),[0,0,1]); 
+    
+    if ~sum(ismember(ratio(iSub, :),0))
+        h(1).FaceColor = cmap_b(2,:);  % blue
+        h(3).FaceColor = cmap_b(1,:);  % blue
+        h(5).FaceColor = [0.8 0.8 0.8];  % gray
+    else
+        h(1).FaceColor = cmap_b(2,:);  % Red
+        h(3).FaceColor = [0.8 0.8 0.8];  % gray
+    end
+    
+    title(sprintf('s%d',iSub))
+%     for k = 1:length(h)
+%      if isgraphics(h(k), 'text')
+%         delete(h(k));
+%      end
+%     end
 end
+
+savename = ['MGS_ratioPerSubj_n', num2str(length(subjs))];
+saveas(gcf,fullfile(dirs.banal, [savename '.tiff']),'tiff'); 
+
 % cmap = colormap(jet); 
 % cmap = cmap(round(linspace(1, 256, 10)), :);
 
@@ -283,19 +303,23 @@ ylabel('number of moves');
 % MGS - unified figure for all subjects
 ratio_impv(:,1) = sum(ratio(:,1:2)'); % pull together less steps and equal #
 ratio_impv(:,2) = ratio(:,3); % more steps
+scatter_loc = 1 + 0.2*randn(1,10);
 figure('units','normalized','outerposition',[0.2 0.2 0.15 0.35],'Color','w');
+hold all
+bar(1,100*mean(ratio_impv(:,1)),'facecolor',[0.8 0.8 0.8])
+errorbar(1,100*mean(ratio_impv(:,1)),100*std(ratio_impv(:,1))/sqrt(length(subjs)),'.k');
 for iSub = 1: length(subjs)
- plot(100*ratio_impv(iSub,:), 'o-', 'LineWidth', 1.5, 'Color', cmap(iSub,:), 'MarkerFaceColor', cmap(iSub,:),'MarkerSize', 8); hold on;     
+    plot(scatter_loc(iSub), 100*ratio_impv(iSub,1), '.', 'Color', cmap(iSub,:), 'MarkerFaceColor', cmap(iSub,:),'MarkerSize', 20); hold on;     
 end 
-xlim([0.5 2.5]);  xticks([1 2]); 
+xlim([0 2]);  xticks(''); 
 ylim([0 120]); yticks(100*[0 0.5 1]); 
 plot(get(gca,'xlim'),100*[0.5 0.5],'k')
-xticklabels({'impv', 'worst'}); 
+% xticklabels({'impv', 'worst'}); 
 set(gca,'fontsize', 12); 
 ylabel('Percentage (%)'); 
 % title(num2str(mean(ratio(:,3)))); 
-savename = ['MGS_ratioImpvWorst_n', num2str(length(subjs))];
-saveas(gcf,fullfile(dirs.banal, [savename '.jpg']),'jpg'); 
+savename = ['MGS_ratioImpv_n', num2str(length(subjs))];
+saveas(gcf,fullfile(dirs.banal, [savename '.tiff']),'tiff'); 
 
 
 
