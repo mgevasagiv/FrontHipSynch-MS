@@ -54,15 +54,17 @@ subj = data.subj;
 %% STATS - ripple-locked gamma-power 
 % Focus on ripple-locked gamma power for learned mazes
 data = meta_table;
+% Improved trials as we're focusing on effects of experience and event type
+% on successful learning
 data = data(data.impv == 1 & ~isnan(data.mg),:);
-formula = 'mg ~ event + ripple_occur + blk (ripple_occur|epair)';
-lme1 = fitlme(data,formula);
-formula = 'mg ~ event * ripple_occur + blk * ripple_occur + (ripple_occur|epair)';
-% formula = 'mg ~ event + blk + (epair|subj)';
-lme2 = fitlme(data,formula);
-results = compare(lme1,lme2);
-disp(results.pValue)
+formula_simple = 'mg ~ event + ripple_occur + blk + (1|epair)';
+lme_simple = fitlme(data, formula_simple);
+anova(lme_simple)
+betaTable = lme_simple.Coefficients;
 
+% Adding interactions for a complete picture
+formula = 'mg ~ event + ripple_occur + blk + event * ripple_occur + blk * ripple_occur + (1|epair)';
+lme1 = fitlme(data,formula);
 anova(lme1)
 betaTable = lme1.Coefficients;
 
@@ -75,7 +77,7 @@ anova(lme1)
 
 % Another approach - compare whether the interaction explains more than
 % each factor seperately
-data1 = data(data.blk == 1 & data.ripple_occur==1,:);
+data1 = data(data.blk == 1 & data.ripple_occur== 1,:);
 formula = 'impv ~  mg +  event  + (mg|epair)';
 lme1 = fitlme(data1,formula);
 formula = 'impv ~ mg * event + (mg|epair) ';
@@ -96,77 +98,7 @@ disp(results.pValue)
 betaTable = lme2.Coefficients;
 
 
-
-
-
-formula = 'impv ~ mg * event  + (epair|subj)';
-lme1 = fitlme(data,formula);
-formula = 'impv ~ mg * event * blk  + (epair|subj)';
-lme2 = fitlme(data,formula);
-results = compare(lme1,lme2);
-disp(results.pValue)
-
-
-data_i = data(data.impv == 1,:);
-data_i = data_i( strcmp(data_i.event,'preG'),:) ;
-interactionplot(data_i.mg,[data_i.blk, data_i.OFC_axis, data_i.ripple_occur],'varnames',{'B','O','R'})
-
-data_i = data(data.impv == 1,:);
-data_i = data_i( strcmp(data_i.event,'G'),:) ;
-interactionplot(data_i.mg,[data_i.blk, data_i.OFC_axis, data_i.ripple_occur],'varnames',{'B','O','R'})
-
-data_i = data(data.impv == 1,:);
-data_i = data_i( strcmp(data_i.event,'X'),:) ;
-interactionplot(data_i.mg,[data_i.blk, data_i.OFC_axis, data_i.ripple_occur],'varnames',{'B','O','R'})
-    
-%%
-fig_name = 'cohens_effectSize_impv';
-newA4figure(fig_name)
-
-EvTypePlot =  {'X','preG','G','N'};
-clear pval FStat
-for ii = 1:length(EvTypePlot)
-    data = meta_table;
-    data = data(~isnan(data.pac) & ~isnan(data.alpha) & ~isnan(data.mg),:) ;
-
-    data_i = data(data.impv == 1,:);
-    data_i = data_i( strcmp(data_i.event,EvTypePlot{ii}),:) ;
-    formula = 'mg ~ ripple_occur * blk + (ripple_occur|epair)';
-    lme1 = fitlme(data_i,formula);
-
-    ano = anova(lme1);
-    pval(1,ii) =  ano.pValue(2);
-    pval(2,ii) =  ano.pValue(3);
-    pval(3,ii) =  ano.pValue(4);
-  
-    FStat(1,ii) =  ano.FStat(2);
-    FStat(2,ii) =  ano.FStat(3);
-    FStat(3,ii) =  ano.FStat(4);
-    
-    data = data(~isnan(data.mg),:);
-    data_x = data.mg( data.impv == 1 & data.blk == 1 & data.ripple_occur == 1 & ... 
-                            strcmp(data.event,EvTypePlot{ii}) );
-
-    data_y = data.mg( data.impv == 0 & data.blk == 1 & data.ripple_occur == 1 & ... 
-                            strcmp(data.event,EvTypePlot{ii}) );
-    [p_rs(ii) ,h] = ranksum(data_x,data_y);
-    effect = meanEffectSize(data_x,data_y, Effect ="cohen",ConfidenceIntervalType="bootstrap", ...
-                     BootstrapOptions=statset(UseParallel=true),NumBootstraps= bootstrapN);
-    subplot(2,2,ii)
-    h = gardnerAltmanPlot(data_x,data_y,Paired=false,Effect="robustcohen", Alpha=0.05);
-    stringT = sprintf('%s, P = %2.2d, Robust Cohens d = %2.2d',EvTypePlot{ii},p_rs(ii), effect.Effect)
-    title(stringT)
-    ylabel('OFC ripple-locked Gamma power');
-    ax = get(gca);
-    set(gca,'xticklabel',{'Improved','Degraded', 'Robust Cohen''s d'},'ylim',[0 20], 'YTick',[0 20])
-
-end
-
-saveas(gcf, fullfile(savedir,fig_name),'tiff')
-close(gcf)
-
-
-%%
+%% Figure - S4D - Ripple-locked OFC gamma power per event-type
 newA4figure('cohens_effectSize_blk')
 fig_name = 'cohens_effectSize_blk';
 
@@ -175,13 +107,14 @@ clear p_rs
 for ii = 1:length(EvTypePlot)
 
     data = meta_table;
-    data = data(~isnan(data.pac) & ~isnan(data.alpha) & ~isnan(data.mg),:) ;
+    data = data(data.ripple_occur == 1 & ~isnan(data.mg),:) ;
     
     data_x = data.mg( data.impv == 1 & data.blk == 1 & data.ripple_occur == 1 & ... 
                             strcmp(data.event,EvTypePlot{ii}) );
 
     data_y = data.mg( data.impv == 1 & data.blk == 2 & data.ripple_occur == 1 & ... 
                             strcmp(data.event,EvTypePlot{ii}) );
+
     [p_rs(ii) ,h] = ranksum(data_x,data_y);
     effect = meanEffectSize(data_x,data_y,Effect ="cohen",ConfidenceIntervalType="bootstrap", ...
                      BootstrapOptions=statset(UseParallel=true),NumBootstraps=1000);
@@ -200,8 +133,6 @@ for ii = 1:length(EvTypePlot)
 end
 saveas(gcf, fullfile(savedir,fig_name),'tiff')
 close(gcf)
-
-
 
 
 %% diferences between inpv/degraded paths

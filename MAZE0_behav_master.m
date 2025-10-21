@@ -687,6 +687,7 @@ se (2, 2) = grptab.std_rt(grptab.type == 2 & grptab.block == 2)/sqrt(9);
 %se (2, 3) = grptab.std_rt(grptab.type == 3 & grptab.block == 3)/sqrt(9);
 
 figure; 
+hold all
 errorbar([0.95 1.95], m(1, :)', se(1, :)',  'Color', [0.4 0.4 0.4], 'LineWidth', 1.5); hold on; 
 errorbar([1.05 2.05], m(2, :)', se(2, :)',  'Color',  cmap(1, :), 'LineWidth', 1.5); 
 xlim([0.5 2.5]); ylim([-1 1.5]); 
@@ -714,8 +715,8 @@ for iCon = 1: length(contrasts)
     % if limiting to blks 1&2
 %     Data(Data.block == 3, :) = [];
     
-    model.(contrasts{iCon}) = fitlme(Data, 'RT ~ ttype*block + (1|subj)');
-    [beta, betanames, stats]  = fixedEffects(model.(contrasts{iCon})); 
+    model1.(contrasts{iCon}) = fitlme(Data, 'RT ~ ttype*block + (1|subj)');
+    [beta, betanames, stats]  = fixedEffects(model1.(contrasts{iCon})); 
     pmat(:, iCon) = stats.pValue;    
 end 
 

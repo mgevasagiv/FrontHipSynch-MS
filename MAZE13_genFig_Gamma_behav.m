@@ -77,7 +77,7 @@ anova(lme1)
 
 % Another approach - compare whether the interaction explains more than
 % each factor seperately
-data1 = data(data.blk == 1 & data.ripple_occur==1,:);
+data1 = data(data.blk == 1 & data.ripple_occur== 1,:);
 formula = 'impv ~  mg +  event  + (mg|epair)';
 lme1 = fitlme(data1,formula);
 formula = 'impv ~ mg * event + (mg|epair) ';
