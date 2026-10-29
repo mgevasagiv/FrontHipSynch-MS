@@ -204,6 +204,9 @@ for iiCond = 3
                 [meanTFREv_ch, meanEpochs, stdEpochs, allEpochs, nEpochs] = pacCalc.plotAvgSpecDiff( lfp(:)', peaks_local);
                 
                 tvec = -params.timeBeforeAfterEventRipSpec:1/srate:params.timeBeforeAfterEventRipSpec; % sec
+                % GCP integration window (post-stimulus). Manuscript text previously
+                % said [0.15 0.35]; the implemented window is [0.2 0.35]. Re-justify /
+                % optionally replace via MAZE12b_optimize_gamma_window.m.
                 switch evlist{iEtype}
                     case 'N'
                         time_to_test = [0.2 0.35];
@@ -325,12 +328,15 @@ end
 clear data
 filename = sprintf('CenteredAvgEvents_allElectrodesSubj_%s_%d.mat',roi,impvBlk2);
 save(fullfile(savedir, 'population', filename),'freqoi','spectEv','nEvents','chCnt','avgLFP','stdLFP',...
-    'meanTFREv','params','subjects','evlist','X_subj','X_elec','GammaBehavTable'); close all;
+    'meanTFREv','params','subjects','evlist','X_subj','X_elec','X_subj_ch','X_elec_ch',...
+    'GammaBehavTable','GammaBand_trial_all','BehavD2D','BehavD2G','opt_path_impv12_trial'); close all;
 
 
 filename = sprintf('CenteredAvgEvents_allElectrodesSubj_%s_%d_TFRMAT.mat',roi,impvBlk2);
+% ALL_TFR_MAT rows align with X_subj_ch / X_elec_ch / nEvents (trial-level meta)
 save(fullfile(savedir, 'population', filename),'freqoi','spectEv','nEvents','chCnt','avgLFP','stdLFP',...
-    'meanTFREv','params','subjects','evlist','X_subj','X_elec','ALL_TFR_MAT','-v7.3'); close all;
+    'meanTFREv','params','subjects','evlist','X_subj','X_elec','X_subj_ch','X_elec_ch',...
+    'ALL_TFR_MAT','-v7.3'); close all;
 
 
 end
