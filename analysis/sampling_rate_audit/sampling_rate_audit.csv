@@ -1,0 +1,11 @@
+subj,native_fs_Hz,raw_fs_Hz,set_fs_Hz,processed_fs_Hz,fs_source,raw_folder,reviewer_AA_concern,notes
+s01,1000,,1000,512,preproc_set,,not_impacted_native_>=1kHz,no raw_orig folder matched
+s06,1024,,1024,512,preproc_set,,not_impacted_native_>=1kHz,no raw_orig folder matched
+s08,512,,512,512,preproc_set,,impacted_native_~512Hz,no raw_orig folder matched
+s09,512,,512,512,preproc_set,,impacted_native_~512Hz,no raw_orig folder matched
+s12,512,,512,512,preproc_set,,impacted_native_~512Hz,no raw_orig folder matched
+s14,1000,,1000,512,preproc_set,,not_impacted_native_>=1kHz,no raw_orig folder matched
+s15,1000,,1000,512,preproc_set,,not_impacted_native_>=1kHz,no raw_orig folder matched
+s16,1000,,1000,512,preproc_set,,not_impacted_native_>=1kHz,no raw_orig folder matched
+s17,1000,,1000,512,preproc_set,,not_impacted_native_>=1kHz,no raw_orig folder matched
+s18,1000,,1000,512,preproc_set,,not_impacted_native_>=1kHz,no raw_orig folder matched

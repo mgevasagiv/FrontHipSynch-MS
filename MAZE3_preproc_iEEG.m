@@ -37,9 +37,14 @@ addpath(genpath('/Users/kaminkim/Documents/codes/useful'));
 maze_set_path; 
 
 % convert data to ft format 
+original_fsample = EEG.srate; % native acquisition rate (before downsample)
+fprintf('Subject %s: native sampling rate = %.3f Hz\n', subj, original_fsample);
 data = eeglab2fieldtrip(EEG, 'preprocessing', 'none'); clear EEG; 
 
-% downsample 
+% downsample (FieldTrip applies anti-aliasing when reducing Fs)
+% NOTE: if native Fs is already ~512, this step does not add headroom above Nyquist/2.
+% Hardware anti-aliasing at acquisition for native-512 recordings should be confirmed
+% separately (reviewer concern: AA often ~Fs/4 ≈ 128 Hz).
 cfg = [];
 cfg.resamplefs = 512; 
 data_ds = ft_resampledata(cfg, data); 
@@ -74,5 +79,5 @@ data.label{find(cell2mat(cellfun(@(x) strcmp(x, 'trigger'), data_ds.label, 'Unif
 % ft_databrowser(cfg, data)
 % save(fullfile(subjdir, 'pp_test_bson_nootherfilt_240_1000Hz'), 'data');
 
-save(fullfile(subjdir, eegf_out), 'data',  '-v7.3');
+save(fullfile(subjdir, eegf_out), 'data', 'original_fsample', '-v7.3');
 
