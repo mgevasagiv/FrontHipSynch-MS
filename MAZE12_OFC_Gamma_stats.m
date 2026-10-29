@@ -1,5 +1,10 @@
 % MAZE12_OFC_Gamma_stats
 % Factorial stats analyzing TFR diagrams performed by MAZE10_calc_TFR_event
+%
+% NOTE: GCP windows used when building GammaBehavTable in MAZE10 are [0.2 0.35]
+% (not [0.15 0.35] as previously written in the manuscript text). For a
+% cluster-based, data-driven window choice + unified block-2 event model
+% (Fig 2C/2F reviewer points), run MAZE12b_optimize_gamma_window.m.
 
 
 clear all; close all
